@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.mainContainer{
+    @apply  flex md:justify-between p-5;
+}
+
+.subContainer{
+    @apply w-[100%] flex justify-around p-6  flex-wrap;
+}
+
+.swipeContainer{
+    @apply w-[100%] md:w-[30%] shadow-2xl;
+}
+.swipeImage{
+    @apply flex justify-center items-center ;
+}
+
+.detailsContainer{
+    @apply w-[90%] md:mt-0 mt-8 md:w-[50%]  mx-4;
+}
+.starsContainer{
+    @apply flex justify-start items-center pt-4;
+}
+
+.star{
+    @apply h-5 w-5 text-yellow-300 hover:text-yellow-600/80 duration-500 hover:scale-105
+}
+
+.price{
+    @apply mt-3 mb-5 text-3xl font-medium ;
+}
+.oldPrice{
+    @apply mt-3 text-3xl font-medium  line-through text-red-700/60  ;
+}

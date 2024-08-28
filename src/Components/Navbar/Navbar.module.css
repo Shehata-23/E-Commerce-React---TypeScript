@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.circle {
+  @apply flex items-center justify-center w-8 h-8  -top-4 -right-6 rounded-full bg-white/60 absolute text-black font-semibold;
+}
+
+.cartContainer{
+    @apply relative text-red-900;
+}
+.cart {
+  @apply text-4xl ;
+}

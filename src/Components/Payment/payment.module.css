@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.myContainer {
+  @apply   bg-black/20 flex justify-center items-center  p-5 min-h-screen;
+}
+
+.innerContainer {
+  @apply w-[100%] md:w-[35%] bg-slate-400/50 shadow-lg;
+}
+
+.formStyle {
+  @apply mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
+  placeholder:text-black/50 
+}
+
+.formStyleInvalid {
+    @apply mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-red-500 sm:text-sm
+    placeholder:text-black/50 bg-red-400/60
+  }
+
+.error{
+    @apply w-full bg-red-400/0 text-black hover:bg-red-400/25  duration-150 transition-all ease-linear px-3
+    text-[14px] rounded-sm shadow-2xl 
+}
+
+.loader {
+    width: 14px;
+    height: 14px;
+    border: 3px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+  
+  
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  } 
