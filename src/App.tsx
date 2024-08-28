@@ -71,7 +71,6 @@ const routes: RouteObject[] = [
       },
       { path: "signin", element: <SignIn /> },
       { path: "signup", element: <Signup /> },
-      { path: "cake", element: <CandleCake /> },
 
       { path: "*", element: <Notfound /> },
     ],
