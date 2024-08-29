@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCartDetail, getUserOrders, RootState } from "../Redux/Redux";
 import { Link } from "react-router-dom";
-
+import style from "../Allorders/allorderes.module.css";
 const Allorders = () => {
   let dispatch = useDispatch();
   let orders = useSelector((state: RootState) => state.app.userOerder);
@@ -14,22 +14,26 @@ const Allorders = () => {
   console.log("orders", orders);
   return (
     <>
-      <div className="w-full h-full flex flex-col justify-center items-center p-5 dark:text-white dark:bg-[#1E201E]">
-        <p className="dark:bg-[#1E201E] text-center text-3xl font-semibold my-6 dark:text-white">
+      <div
+        className={`${style.mainContainer} dark:text-white dark:bg-[#1E201E]`}
+      >
+        <p className={`${style.title} dark:bg-[#1E201E]  dark:text-white`}>
           All Orders
         </p>
-        <div className="md:w-[70%] w-[90%] flex flex-col justify-center items-center">
+        <div className={style.allOrdersContainer}>
           {loading ? (
-            <p className="text-center text-xl font-semibold">Loading...</p>
+            <p className={`${style.loading}`}>Loading...</p>
           ) : orders && orders.data && orders.data.length > 0 ? (
             orders.data.map((order) => (
               <div
                 key={order._id}
-                className="mb-4 p-4 border border-gray-300 rounded shadow-lg w-full md:text-lg text-sm dark:bg-[#3C3D37]"
+                className={`${style.orders} dark:bg-[#3C3D37]`}
               >
                 <h3 className="font-semibold mb-2">Order ID: {order._id}</h3>
                 <p className="mb-2">Total Price: ${order.totalOrderPrice}</p>
-                <p className="mb-2">Payment Method: {order.paymentMethodType}</p>
+                <p className="mb-2">
+                  Payment Method: {order.paymentMethodType}
+                </p>
                 <p className="border-b dark:border-b-white border-black mb-5">
                   Delivered: {order.isDelivered ? "Yes" : "No"}
                 </p>
@@ -40,12 +44,12 @@ const Allorders = () => {
                         key={item.product._id}
                         className="w-full flex flex-col md:flex-row md:items-start mb-4"
                       >
-                        <div className="w-full md:w-[20%] flex justify-center mb-4 md:mb-0 overflow-hidden">
+                        <div className={`${style.imgContainer}`}>
                           <Link to={`/productDetails/${item.product.id}`}>
                             <img
                               src={item.product.imageCover}
                               alt={item.product.title}
-                              className="object-contain w-full h-full hover:scale-110 duration-200"
+                              className={style.imgStyle}
                             />
                           </Link>
                         </div>

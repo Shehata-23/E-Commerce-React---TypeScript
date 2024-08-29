@@ -85,7 +85,7 @@ function App() {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <Toaster /> {/* Ensure this is only rendered once in the app */}
+        <Toaster /> 
       </QueryClientProvider>
     </Provider>
   );

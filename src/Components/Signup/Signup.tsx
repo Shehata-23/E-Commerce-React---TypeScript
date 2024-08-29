@@ -99,7 +99,7 @@ const SignUp = () => {
     }
   }
   return (
-    <div className={`${style.myContainer} dark:bg-[#1E201E] `}>
+    <div className={`${style.myContainer} dark:bg-[#1E201E] p-16`}>
       <div className={style.innerContainer}>
         <form
           action=""

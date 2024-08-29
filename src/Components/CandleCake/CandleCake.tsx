@@ -3,13 +3,13 @@ import "../CandleCake/candle.css";
 
 const CandleCake = () => {
   const [isMicOpen, setIsMicOpen] = useState(false);
-  const [isLoud, setIsLoud] = useState(false); // State for loud sound
+  const [isLoud, setIsLoud] = useState(false); 
   let audioContext;
   let analyser;
   let dataArray;
 
   async function takePermission() {
-    if (isMicOpen) return; // Prevent opening mic multiple times
+    if (isMicOpen) return; 
 
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
