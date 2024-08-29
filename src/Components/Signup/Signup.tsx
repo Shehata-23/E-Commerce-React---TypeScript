@@ -62,7 +62,7 @@ const SignUp = () => {
         )
         .required("Password is required"),
       rePassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Confirm Password is required"),
     }),
   });
@@ -83,10 +83,10 @@ const SignUp = () => {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError;
         if (axiosError.response) {
-          const errorData = axiosError.response.data;
-          const message = errorData.message || "An error occurred";
+          // const errorData = axiosError.response.data;
+          // const message = errorData.message || "An error occurred";
           // toast.error(message);
-          console.log(`Error message: ${message}`);
+          // console.log(`Error message: ${message}`);
         } else {
           console.log("Error during signup:", axiosError.message);
         }

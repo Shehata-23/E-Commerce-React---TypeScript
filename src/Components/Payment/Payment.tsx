@@ -1,15 +1,15 @@
-import { Formik, useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import { useEffect } from "react";
 import style from "../Payment/payment.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import {
+  AppDispatch,
   cashPayment,
   getCartDetail,
   onlinePayment,
   RootState,
 } from "../Redux/Redux";
-import { signInValues } from "../Signin/Signin";
 import { Label, Radio } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +23,7 @@ const Payment = () => {
 
   let navigate = useNavigate();
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(getCartDetail());
   }, [dispatch]);
@@ -79,9 +79,9 @@ const Payment = () => {
     "New Cairo",
     "Obour City",
   ];
-  let cartDetails = useSelector((state: RootState) => state.app.cartDetails);
-  let isPayed = useSelector((state: RootState) => state.app.isPayed);
-  const loading = useSelector((state: RootState) => state.app.loading);
+  const cartDetails = useSelector((state: RootState) => state.app.cartDetails);
+  const isPayed = useSelector((state: RootState) => state.app.isPayed);
+  // const loading = useSelector((state: RootState) => state.app.loading);
 
   useEffect(() => {
     dispatch(getCartDetail());
@@ -95,16 +95,23 @@ const Payment = () => {
       payment: "",
     },
     onSubmit: (values: paymentTypes) => {
-      if (values.payment === "Cash") {
+      if (values.payment === "Cash" && cartDetails && "_id" in cartDetails) {
         async function cashpayment() {
-          await dispatch(
-            cashPayment({ paymentDetails: values, id: cartDetails._id })
-          );
+          if (
+            values.payment === "Cash" &&
+            cartDetails &&
+            "_id" in cartDetails
+          ) {
+            await dispatch(
+              cashPayment({ paymentDetails: values, id: cartDetails._id })
+            );
+          }
+
           navigate("/home");
         }
         cashpayment();
       }
-      if (values.payment === "online") {
+      if (values.payment === "online" && cartDetails && "_id" in cartDetails) {
         dispatch(
           onlinePayment({ paymentDetails: values, id: cartDetails._id })
         );
@@ -126,9 +133,6 @@ const Payment = () => {
         .required("Phone number is required"),
     }),
   });
-
-
-  
 
   return (
     <>

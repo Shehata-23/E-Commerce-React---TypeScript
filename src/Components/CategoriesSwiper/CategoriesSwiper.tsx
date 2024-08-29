@@ -1,5 +1,3 @@
-import React from "react";
-import { EffectCards } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-cards";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,13 +5,19 @@ import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
 import { Grid, Pagination } from "swiper/modules";
-import CandleCake from "../CandleCake/CandleCake";
-import CardComponent from "../Card/Card";
-import Search from "../SearchComp/Search";
 
+interface Subcategory {
+  id: number;
+  name: string;
+}
 
+interface CategoriesSwiperProps {
+  subcategories: Subcategory[];
+}
 
-const CategoriesSwiper = ({subcategories}) => {
+const CategoriesSwiper: React.FC<CategoriesSwiperProps> = ({
+  subcategories,
+}) => {
   return (
     <>
       <div className="w-[90%] px-11  mx-auto max-h-[500px] pt-14 pb-8   flex justify-center dark:bg-[#1E201E] dark:border-white/20 dark:border-b border-black ">
@@ -44,9 +48,9 @@ const CategoriesSwiper = ({subcategories}) => {
           }}
         >
           {subcategories.length > 0 ? (
-            subcategories.map((item) => (
+            subcategories.map((item, idx) => (
               <SwiperSlide
-                key={item._id}
+                key={idx}
                 className="shadow-md hover:-translate-y-2 duration-500 cursor-pointer text-center text-lg bg-white 
                 h-[calc((100%-30px)/2)] 
                 sm:h-[calc((100%-40px)/2)] 

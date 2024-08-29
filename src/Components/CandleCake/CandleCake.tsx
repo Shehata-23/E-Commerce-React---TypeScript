@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../CandleCake/candle.css";
 
 const CandleCake = () => {
   const [isMicOpen, setIsMicOpen] = useState(false);
-  const [isLoud, setIsLoud] = useState(false); 
-  let audioContext;
-  let analyser;
-  let dataArray;
+  const [isLoud, setIsLoud] = useState(false);
+  let audioContext: AudioContext | undefined;
+  let analyser: AnalyserNode | undefined;
+  let dataArray: Uint8Array ;
+
+  
 
   async function takePermission() {
-    if (isMicOpen) return; 
+    if (isMicOpen) return;
 
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    audioContext = new (window.AudioContext || AudioContext)();
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -32,6 +34,7 @@ const CandleCake = () => {
     }
   }
 
+ 
   function processAudio() {
     if (!analyser) return;
 
@@ -48,7 +51,6 @@ const CandleCake = () => {
     if (average > 120) {
       console.log("Loud sound detected!");
       setIsLoud(true);
-      closeMic();
     }
 
     requestAnimationFrame(processAudio);

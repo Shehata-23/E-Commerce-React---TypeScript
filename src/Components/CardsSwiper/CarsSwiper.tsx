@@ -1,12 +1,6 @@
-import React from "react";
-import { Card, DarkThemeToggle } from "flowbite-react";
-import { Link } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
+
 import style from "../Home/home.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { Spinner } from "flowbite-react";
+
 import { EffectCards } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-cards";
@@ -14,11 +8,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
-import { Grid, Pagination } from "swiper/modules";
-import CandleCake from "../CandleCake/CandleCake";
-import CardComponent from "../Card/Card";
-import Search from "../SearchComp/Search";
-import CategoriesSwiper from "../CategoriesSwiper/CategoriesSwiper";
 
 const CarsSwiper = () => {
   return (

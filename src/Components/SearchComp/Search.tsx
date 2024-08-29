@@ -1,6 +1,11 @@
 import React from "react";
 
-const Search = ({search, setSearch}) => {
+interface SearchProps {
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Search: React.FC<SearchProps> = ({ search, setSearch }) => {
   return (
     <>
       <form className="min-w-[60%]  mx-auto my-6 shadow-lg">

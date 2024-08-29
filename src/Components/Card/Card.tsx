@@ -1,10 +1,18 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { Card, DarkThemeToggle } from "flowbite-react";
-import { Spinner } from "flowbite-react";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { Card } from "flowbite-react";
+import { Product } from "../Redux/Redux";
+import style from "../Home/home.module.css"
 
+interface CardProps {
+  item: Product;
+  handleAddTowishList: (item: Product) => void;
+  WishList: Product[];
+  addToCart: (id: string) => Promise<void>;
+  loadingStates: { [key: string]: boolean };
+  
+}
 
 const CardComponent = ({
   item,
@@ -12,8 +20,8 @@ const CardComponent = ({
   WishList,
   addToCart,
   loadingStates,
-  style
-}) => {
+}: CardProps) => {
+
   return (
     <Card
       className={`your-default-styles ${style.subContainer} dark:bg-[#3C3D37] dark:border-0 dark:shadow-sm dark:shadow-white/20 hover:dark:shadow-md`}
@@ -44,8 +52,8 @@ const CardComponent = ({
             key={index}
             className={`h-7 w-7 ${
               index < Math.floor(item.ratingsAverage)
-                ? 'text-yellow-300'
-                : 'text-gray-300'
+                ? "text-yellow-300"
+                : "text-gray-300"
             }  duration-500 hover:scale-105`}
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -63,17 +71,17 @@ const CardComponent = ({
             <FontAwesomeIcon
               icon={faHeart}
               className={`text-3xl text-[#a8a8a8] my-4 cursor-pointer ${
-                WishList.find((wishItem) => wishItem._id === item._id)
-                  ? 'text-red-500'
-                  : ''
+                WishList.find((wishItem: Product) => wishItem._id === item._id)
+                  ? "text-red-500"
+                  : ""
               }`}
-              onClick={() => handleAddTowishList(item._id)}
+              onClick={() => handleAddTowishList(item)}
             />
           ) : (
             <FontAwesomeIcon
               icon={faHeart}
               className="text-3xl text-[#a8a8a8] my-4 cursor-pointer"
-              onClick={() => handleAddTowishList(item._id)}
+              onClick={() => handleAddTowishList(item)}
             />
           )}
         </div>
@@ -106,7 +114,7 @@ const CardComponent = ({
               />
             </svg>
           ) : (
-            'Add to Cart'
+            "Add to Cart"
           )}
         </button>
       </div>

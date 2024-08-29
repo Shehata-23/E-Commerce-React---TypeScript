@@ -4,29 +4,29 @@ import * as Yup from "yup";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState, submitSignin } from "../Redux/Redux";
-import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 export type signInValues = {
   email: string;
   password: string;
 };
 const SignIn = () => {
-  // let [isLoading, setIsLoading] = useState(false);
-
   const loading = useSelector((state: RootState) => state.app.loading);
   const token = useSelector((state: RootState) => state.app.token);
   const dispatch = useDispatch<AppDispatch>();
-  let navigate = useNavigate();
-  async function handleSignIn(values) {
+  const navigate = useNavigate();
+  async function handleSignIn(values: signInValues) {
     try {
-      let response = await dispatch(submitSignin(values));
+      const response = await dispatch(submitSignin(values));
       console.log(response);
       if (response.type == "app/signin/fulfilled") {
         navigate("/home");
       }
     } catch (error) {
-      navigate("/signiin");
+      if (error instanceof AxiosError) {
+        navigate("/signiin");
+      }
     }
   }
 

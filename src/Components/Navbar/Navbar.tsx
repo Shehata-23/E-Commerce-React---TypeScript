@@ -1,20 +1,19 @@
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../Redux/Redux";
+import { useSelector} from "react-redux";
+import {  RootState } from "../Redux/Redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import style from "../Navbar/Navbar.module.css";
 import Cookies from "js-cookie";
 
 const Navbar = () => {
   // const token = useSelector((state: RootState) => state.app.token);
   const cartDetails = useSelector((state: RootState) => state.app.cartDetails);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [isSignedout, setIsSignedout] = useState(false);
+  // const [isSignedout, setIsSignedout] = useState(false);
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
@@ -25,8 +24,9 @@ const Navbar = () => {
 
   const handleSignOut = () => {
     Cookies.remove("token");
-    setIsSignedout(true);
+    // setIsSignedout(true);
     navigate("/home");
+    
   };
 
   return (

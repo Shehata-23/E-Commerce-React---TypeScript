@@ -18,7 +18,6 @@ import { Toaster } from "react-hot-toast";
 import Payment from "./Components/Payment/Payment";
 import Allorders from "./Components/Allorders/Allorders";
 import WishList from "./Components/WishList/WishList";
-import CandleCake from "./Components/CandleCake/CandleCake";
 import Notfound from "./Components/NotFound/Notfound";
 
 const routes: RouteObject[] = [

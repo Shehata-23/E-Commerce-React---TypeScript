@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCartDetail, getUserOrders, RootState } from "../Redux/Redux";
+import { AppDispatch, getCartDetail, getUserOrders, Order, RootState } from "../Redux/Redux";
 import { Link } from "react-router-dom";
 import style from "../Allorders/allorderes.module.css";
 const Allorders = () => {
-  let dispatch = useDispatch();
-  let orders = useSelector((state: RootState) => state.app.userOerder);
-  let loading = useSelector((state: RootState) => state.app.loading);
+  const dispatch = useDispatch<AppDispatch>();
+  const orders = useSelector((state: RootState) => state.app.userOerder);
+  const loading = useSelector((state: RootState) => state.app.loading);
   useEffect(() => {
     dispatch(getUserOrders());
     dispatch(getCartDetail());
@@ -23,8 +23,8 @@ const Allorders = () => {
         <div className={style.allOrdersContainer}>
           {loading ? (
             <p className={`${style.loading}`}>Loading...</p>
-          ) : orders && orders.data && orders.data.length > 0 ? (
-            orders.data.map((order) => (
+          ) : orders && orders && orders.length > 0 ? (
+            orders.map((order: Order ) => (
               <div
                 key={order._id}
                 className={`${style.orders} dark:bg-[#3C3D37]`}

@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  AppDispatch,
   getCartDetail,
   getUserWishList,
+  Product,
   removeFromWishList,
   RootState,
 } from "../Redux/Redux";
@@ -15,7 +17,7 @@ import CardComponent from "../Card/Card";
 
 
 const WishList = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [loadingStates, setLoadingStates] = useState({});
 
   const userWishList = useSelector(
@@ -26,12 +28,13 @@ const WishList = () => {
     dispatch(getUserWishList());
   }, [dispatch]);
 
-  async function handleRemoveFromWishList(id) {
+  async function handleRemoveFromWishList(item: Product) {
+    const id = item.id;
     await dispatch(removeFromWishList({ id }));
     await dispatch(getUserWishList());
   }
 
-  async function addToCart(id) {
+  async function addToCart(id: string) {
     setLoadingStates((prev) => ({ ...prev, [id]: true }));
 
     try {
@@ -48,7 +51,7 @@ const WishList = () => {
   return (
     <div className={`${style.mainContainer} dark:bg-[#1E201E]`}>
       {userWishList.length > 0 ? (
-        userWishList.map((item) => (
+        userWishList.map((item: Product) => (
           <div
             key={item._id}
             className="w-[95%] md:w-6/12 lg:w-3/12 flex justify-center items-center rounded-xl mb-4"
@@ -59,7 +62,6 @@ const WishList = () => {
                     WishList={userWishList}
                     addToCart={addToCart}
                     loadingStates={loadingStates}
-                    style={style}
                   />
           </div>
         ))

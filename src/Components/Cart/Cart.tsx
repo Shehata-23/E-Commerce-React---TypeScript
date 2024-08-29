@@ -1,8 +1,7 @@
-import axios from "axios";
-import React, { useEffect } from "react";
-import Cookies from "js-cookie";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  AppDispatch,
   deleteCart,
   deleteItem,
   getCartDetail,
@@ -12,24 +11,24 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
-  let loading = useSelector((state: RootState) => state.app.loading);
+  const loading = useSelector((state: RootState) => state.app.loading);
 
-  let cartDetails = useSelector((state: RootState) => state.app.cartDetails);
+  const cartDetails = useSelector((state: RootState) => state.app.cartDetails);
 
-  let updated = useSelector((state: RootState) => state.app.updated);
-  let deleted = useSelector((state: RootState) => state.app.deleted);
-  let isCartDeleted = useSelector((state: RootState) => state.app.deleteCart);
+  const updated = useSelector((state: RootState) => state.app.updated);
+  const deleted = useSelector((state: RootState) => state.app.deleted);
+  const isCartDeleted = useSelector((state: RootState) => state.app.deleteCart);
 
-  let userId = useSelector((state: RootState) => state.app.userID);
+  const userId = useSelector((state: RootState) => state.app.userID);
 
   const navigate = useNavigate();
-  function handleCount(id, count) {
+  function handleCount(id: string , count: number) {
     dispatch(updateCount({ id, count: count }));
   }
 
-  function handleDelete(id) {
+  function handleDelete(id: string) {
     dispatch(deleteItem({ id }));
   }
   function handleCartDelete() {

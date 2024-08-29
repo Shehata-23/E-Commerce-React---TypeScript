@@ -1,16 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
   AppDispatch,
   getCartDetail,
-  getProductDetails,
   resetProductDetails,
   RootState,
-  setItemId,
   setProductDetails,
 } from "../Redux/Redux";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import "flowbite/dist/flowbite.min.css";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -21,11 +19,10 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import { Pagination } from "swiper/modules";
-import axios from "axios";
 import { addToCartApi } from "../Home/Home";
 import toast from "react-hot-toast";
 
-async function getData(id) {
+async function getData(id: string) {
   console.log("Starting to fetch data...");
 
   try {
@@ -45,7 +42,7 @@ async function getData(id) {
     console.log(data);
     return data;
   } catch (error) {
-    console.log("An error occurred:", error.message);
+    // console.log("An error occurred:", error.message);
     return null;
   }
 }
@@ -54,18 +51,19 @@ const ProductDetails = () => {
   let [cartLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const myID = useSelector((state: RootState) => state.app.itemId);
   const productDetails = useSelector(
     (state: RootState) => state.app.productDetails
   );
 
   const queryKey = useMemo(() => ["productDetails", id], [id]);
 
-  const { data, error, isLoading } = useQuery(
+  const { data, isLoading } = useQuery(
     queryKey,
     () => {
       dispatch(resetProductDetails());
-      return getData(id);
+      if (id) {
+        return getData(id);
+      }
     },
 
     {
@@ -84,7 +82,7 @@ const ProductDetails = () => {
   console.log(isLoading);
   console.log(productDetails);
 
-  async function handleAddToCart(id) {
+  async function handleAddToCart(id: string) {
     setIsLoading(true);
     try {
       await addToCartApi(id);
@@ -177,7 +175,11 @@ const ProductDetails = () => {
             </div>
             <button
               className="min-w-[25%] max-w-fit min-h[15%]  flex justify-center rounded-lg bg-cyan-700 px-2 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800 disabled:opacity-50"
-              onClick={() => handleAddToCart(id)}
+              onClick={() => {
+                if (id) {
+                  handleAddToCart(id);
+                }
+              }}
             >
               {cartLoading ? (
                 <span

@@ -1,36 +1,47 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
-import axios from "axios";
 import { signInValues } from "../Signin/Signin";
 import Cookies from "js-cookie";
-// import ProductDetails from "./../ProductDetails/ProductDetails";
 import { jwtDecode } from "jwt-decode";
-// import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
 
-type Subcategory = {
+export type Subcategory = {
   _id: string;
   name: string;
   slug: string;
   category: string;
 };
 
-type Category = {
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export type Category = {
   _id: string;
   name: string;
   slug: string;
   image: string;
 };
 
-type Brand = {
+export type Brand = {
   _id: string;
   name: string;
   slug: string;
   image: string;
 };
 
-type Product = {
+interface CartItem {
+  count: number;
+  _id: string;
+  product: Product;
+  price: number;
+}
+
+export type Product = {
   subcategory: Subcategory[];
   _id: string;
   title: string;
@@ -40,6 +51,10 @@ type Product = {
   brand: Brand;
   ratingsAverage: number;
   id: string;
+  priceAfterDiscount: string;
+  price: string;
+  description: string;
+  images: [];
 };
 
 type CartProduct = {
@@ -49,7 +64,7 @@ type CartProduct = {
   price: number;
 };
 
-type CartDetails = {
+export type CartDetails = {
   _id: string;
   cartOwner: string;
   products: CartProduct[];
@@ -59,23 +74,53 @@ type CartDetails = {
   totalCartPrice: number;
 };
 
+interface AddToWishlistArgs {
+  id: string;
+}
+
+interface WishlistResponse {
+  success: boolean;
+  message: string;
+}
+
+interface RemoveFromWishlistArgs {
+  id: string;
+}
+
+export interface Order {
+  taxPrice: number;
+  shippingPrice: number;
+  totalOrderPrice: number;
+  paymentMethodType: string;
+  isPaid: boolean;
+  isDelivered: boolean;
+  _id: string;
+  user: User;
+  cartItems: CartItem[];
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+  __v: number;
+}
+
 type AppState = {
   token: string | null;
   id: string;
   counter: number;
   loading: boolean;
-  products: Product[];
+  products: Product[] | [];
   itemId: string;
-  productDetails: Product;
-  cartDetails: CartDetails;
+  productDetails: Product | null;
+  cartDetails: CartDetails | null;
   updated: boolean;
   deleted: boolean;
   deleteCart: boolean;
   isPayed: boolean;
   userID: string;
-  userOerder: any;
+  userOerder: Order[] ;
   userWishList: any;
 };
+
 
 const initialState: AppState = {
   token: null,
@@ -91,7 +136,7 @@ const initialState: AppState = {
   deleteCart: true,
   isPayed: false,
   userID: "",
-  userOerder: "",
+  userOerder: [],
   userWishList: "",
 };
 
@@ -106,13 +151,17 @@ export const submitSignin = createAsyncThunk(
       console.log("signin");
       toast.success("Success");
       return response.data.token;
-    } catch (error: any) {
-      let message = "Error";
-      if (error.response) {
-        message = error.response.data.message || message;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error(
+          "Error fetching cart details:",
+          error.response?.data || error.message
+        );
+        return rejectWithValue(error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error fetching cart details:", error);
+        return rejectWithValue("An unexpected error occurred");
       }
-
-      return rejectWithValue(message);
     }
   }
 );
@@ -124,15 +173,17 @@ export const getProducts = createAsyncThunk(
       const response = await axios.get(url);
       console.log(response.data);
       return response.data;
-    } catch (error: any) {
-      let message = "Error";
-      if (error.response) {
-        message = error.response.data.message || message;
-      } else if (error.message) {
-        message = error.message;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error(
+          "Error fetching cart details:",
+          error.response?.data || error.message
+        );
+        return rejectWithValue(error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error fetching cart details:", error);
+        return rejectWithValue("An unexpected error occurred");
       }
-
-      return rejectWithValue(message);
     }
   }
 );
@@ -327,7 +378,7 @@ export const onlinePayment = createAsyncThunk(
         {
           headers: {
             token: token,
-            "Content-Type": "application/json", 
+            "Content-Type": "application/json",
           },
         }
       );
@@ -359,70 +410,86 @@ export const onlinePayment = createAsyncThunk(
 );
 
 export const getUserOrders = createAsyncThunk("user/orders", async () => {
+  interface JwtPayload {
+    id: string;
+  }
   const token = Cookies.get("token");
-  const { id } = jwtDecode(token);
 
-  try {
-    const response = await axios.get(
-      `https://ecommerce.routemisr.com/api/v1/orders/user/${id}`
-    );
+  if (token) {
+    const { id } = jwtDecode<JwtPayload>(token);
+    try {
+      const response = await axios.get(
+        `https://ecommerce.routemisr.com/api/v1/orders/user/${id}`
+      );
 
-    console.log(response);
-    return response;
-  } catch (error) {
-    console.error(
-      "Error during getting all orders:",
-      error.response?.data || error.message
-    );
+      console.log("hereeeee",response.data);
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error(
+          "Error during getting all orders:",
+          error.response?.data || error.message
+        );
+      }
+    }
   }
 });
 
-export const addToWishList = createAsyncThunk(
-  "app/addwishlist",
-  async ({ id }) => {
-    console.log("woeked");
-    const token = Cookies.get("token");
-    try {
-      const response = await axios.post(
-        `https://ecommerce.routemisr.com/api/v1/wishlist`,
-        { productId: id },
-        { headers: { token: token } }
-      );
-
-      return response.data;
-    } catch (error) {
+export const addToWishList = createAsyncThunk<
+  WishlistResponse,
+  AddToWishlistArgs,
+  { rejectValue: string }
+>("app/addwishlist", async ({ id }: AddToWishlistArgs, { rejectWithValue }) => {
+  console.log("worked");
+  const token = Cookies.get("token");
+  try {
+    const response = await axios.post(
+      `https://ecommerce.routemisr.com/api/v1/wishlist`,
+      { productId: id },
+      { headers: { token: token } }
+    );
+    console.log(response.data);
+    return response.data as WishlistResponse;
+  } catch (error) {
+    if (error instanceof AxiosError) {
       console.error(
-        "Error during adding to wishlist:",
+        "Error during getting all orders:",
         error.response?.data || error.message
       );
-      throw error;
+      return rejectWithValue(error.response?.data || "An error occurred");
     }
+    return rejectWithValue("An error occurred");
   }
-);
+});
 
-export const removeFromWishList = createAsyncThunk(
+export const removeFromWishList = createAsyncThunk<
+  WishlistResponse,
+  RemoveFromWishlistArgs,
+  { rejectValue: string }
+>(
   "app/removewishlist",
-  async ({ id }) => {
-    console.log("woeked");
+  async ({ id }: RemoveFromWishlistArgs, { rejectWithValue }) => {
+    console.log("worked");
     const token = Cookies.get("token");
     try {
       const response = await axios.delete(
         `https://ecommerce.routemisr.com/api/v1/wishlist/${id}`,
-
         { headers: { token: token } }
       );
 
-      return response.data;
+      return response.data as WishlistResponse;
     } catch (error) {
-      console.error(
-        "Error during adding to wishlist:",
-        error.response?.data || error.message
-      );
-      throw error;
+      if (error instanceof AxiosError) {
+        console.error(
+          "Error during removing from wishlist:",
+          error.response?.data || error.message
+        );
+        return rejectWithValue(error.response?.data || "An error occurred");
+      }
+      return rejectWithValue("An error occurred");
     }
   }
 );
-
 
 export const getUserWishList = createAsyncThunk("app/getwishlist", async () => {
   console.log("woeked");
@@ -436,16 +503,14 @@ export const getUserWishList = createAsyncThunk("app/getwishlist", async () => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error(
-      "Error during adding to wishlist:",
-      error.response?.data || error.message
-    );
-    throw error;
+    if (error instanceof AxiosError) {
+      console.error(
+        "Error during getting wishList",
+        error.response?.data || error.message
+      );
+    }
   }
 });
-
-
-
 
 const appSlice = createSlice({
   name: "app",
@@ -473,16 +538,18 @@ const appSlice = createSlice({
       .addCase(submitSignin.fulfilled, (state, action) => {
         state.loading = false;
         state.token = action.payload;
-        Cookies.set("token", state.token, {
-          expires: 7,
-          secure: true,
-          sameSite: "Strict",
-        });
-        Cookies.set("showFirstTime", true, {
-          expires: 7,
-          secure: true,
-          sameSite: "Strict",
-        });
+        if (state.token) {
+          Cookies.set("token", state.token, {
+            expires: 7,
+            secure: true,
+            sameSite: "Strict",
+          });
+          Cookies.set("showFirstTime", String(true), {
+            expires: 7,
+            secure: true,
+            sameSite: "Strict",
+          });
+        }
       })
       .addCase(submitSignin.rejected, (state) => {
         state.loading = false;
@@ -499,7 +566,7 @@ const appSlice = createSlice({
       })
       .addCase(getProducts.rejected, (state) => {
         state.loading = false;
-        state.products = null;
+        state.products = [];
       })
       .addCase(getCartDetail.pending, (state) => {
         state.loading = true;
@@ -588,9 +655,6 @@ const appSlice = createSlice({
       });
   },
 });
-
-
-
 
 // store //
 

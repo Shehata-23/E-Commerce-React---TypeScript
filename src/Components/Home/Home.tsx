@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,10 +7,11 @@ import {
   getCartDetail,
   getProducts,
   getUserWishList,
+  Product,
   removeFromWishList,
 } from "../Redux/Redux";
 import { RootState } from "../Redux/Redux";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import axios from "axios";
 import style from "../Home/home.module.css";
 import { Spinner } from "flowbite-react";
@@ -25,7 +26,7 @@ import Search from "../SearchComp/Search";
 import CategoriesSwiper from "../CategoriesSwiper/CategoriesSwiper";
 import CarsSwiper from "../CardsSwiper/CarsSwiper";
 
-export async function addToCartApi(id) {
+export async function addToCartApi(id: string) {
   const token = Cookies.get("token");
   try {
     let response = await axios.post(
@@ -39,7 +40,6 @@ export async function addToCartApi(id) {
   }
 }
 
-
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector((state: RootState) => state.app.products);
@@ -50,7 +50,6 @@ const Home = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [showComponent, setShowComponent] = useState(false);
   const [search, setSearch] = useState("");
-
 
   useEffect(() => {
     const fetchSubcategories = async () => {
@@ -68,7 +67,6 @@ const Home = () => {
     fetchSubcategories();
   }, []);
 
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowComponent(true);
@@ -76,7 +74,6 @@ const Home = () => {
 
     return () => clearTimeout(timer);
   }, []);
-
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -99,31 +96,30 @@ const Home = () => {
     getwish();
   }, [dispatch, isWishlist]);
 
-
-  function handlewishListSetter(id) {
+  function handlewishListSetter(id: string) {
     setWishlist((prev) => ({ ...prev, [id]: true }));
   }
 
-
-  function handlewishListRemover(id) {
+  function handlewishListRemover(id: string) {
     setWishlist((prev) => ({ ...prev, [id]: false }));
   }
 
+  async function handleAddTowishList(product: Product) {
 
-  async function handleAddTowishList(id) {
-    if (WishList.find((item) => item.id === id)) {
-      let response = await dispatch(removeFromWishList({ id }));
+    const id = product._id
+
+    if (WishList.find((item: Product) => item.id === id)) {
+      const response = await dispatch(removeFromWishList({ id }));
       console.log(response);
       handlewishListRemover(id);
     } else {
-      let response = await dispatch(addToWishList({ id }));
+      const response = await dispatch(addToWishList({ id }));
       console.log(response);
       handlewishListSetter(id);
     }
   }
 
- 
-  async function addToCart(id) {
+  async function addToCart(id: string) {
     setLoadingStates((prev) => ({ ...prev, [id]: true }));
 
     try {
@@ -137,10 +133,7 @@ const Home = () => {
     }
   }
 
-
-
   if (loading && products.length === 0) {
-
     return (
       <div className="min-w-full min-h-screen dark:bg-[#3C3D37] flex justify-center items-center">
         <Spinner aria-label="Extra large spinner example" size="xl" />
@@ -148,10 +141,9 @@ const Home = () => {
     );
   }
 
-
   return (
     <>
-          {/* {"Birthday Cake"} */}
+      {/* {"Birthday Cake"} */}
       <div className="min-w-full min-h-60 pt-14 pb-8  flex justify-center dark:bg-[#1E201E] relative dark:border-white/20 dark:border-b border-black ">
         {showComponent &&
           Cookies.get("token") &&
@@ -170,7 +162,7 @@ const Home = () => {
             </div>
           )}
 
-          {/* {"Landing Part"} */}
+        {/* {"Landing Part"} */}
 
         <div className="flex md:flex-row flex-col justify-between items-center w-[90%] shadow-lg p-7 dark:text-white">
           <div className="md:w-[70%] w-[90%] md:mb-0 mb-9 ">
@@ -189,20 +181,20 @@ const Home = () => {
         </div>
       </div>
 
-          {/* {"SubCategories Swiper"} */}
+      {/* {"SubCategories Swiper"} */}
       <div className="min-w-full min-h-screen dark:bg-[#1E201E] flex justify-center items-center flex-col">
         <CategoriesSwiper subcategories={subcategories} />
       </div>
 
-          {/* {"searchBar"} */}
+      {/* {"searchBar"} */}
       <div className="w-full flex justify-center dark:bg-[#1E201E] items-center">
-       <Search search={search} setSearch={setSearch} />
+        <Search search={search} setSearch={setSearch} />
       </div>
 
-          {/* {"Products Card"} */}
+      {/* {"Products Card"} */}
       <div className="flex flex-wrap ">
         <div className={`${style.mainContainer} dark:bg-[#1E201E] w-screen`}>
-          {products.filter((item) =>
+          {products.filter((item: Product) =>
             item.title.toLowerCase().includes(search.toLowerCase())
           ).length === 0 ? (
             <div className="w-full flex justify-center items-center py-20">
@@ -215,7 +207,7 @@ const Home = () => {
               .filter((item) =>
                 item.title.toLowerCase().includes(search.toLowerCase())
               )
-              .map((item, idx) => (
+              .map((item) => (
                 <div
                   key={item._id}
                   className="w-[95%]  md:w-6/12 lg:w-3/12 flex justify-center items-center rounded-xl"
@@ -226,7 +218,7 @@ const Home = () => {
                     WishList={WishList}
                     addToCart={addToCart}
                     loadingStates={loadingStates}
-                    style={style}
+                    
                   />
                 </div>
               ))
